@@ -3,6 +3,7 @@
 #include<fstream>
 #include<string>
 #include<algorithm>
+
 // Autor: Adam S³odownik 
 // sekcja 1 Œroda 12:00
 // github: Adam01077
@@ -34,7 +35,7 @@ int main() {
 	// filtrowanie linii zawieraj¹cych "ERROR" i dodanie ich do wektora errors
 	// back_inserter dzia³a jak push_back
 	std::copy_if(lines.begin(), lines.end(), std::back_inserter(errors), [](const auto& line) {
-		return line.find("ERROR") != std::string::nppos;
+		return line.find("ERROR") != std::string::npos;
 		});
 	// npos mowi czy nie znaleziono ciagu znakow, i zwraca wartosc maksymalna dla size_t jak znaleziono to zwraca indeks pierwszego wystapienia
 	// zaprzeczenie w warunku oznacza ze szukam wystepujacych
