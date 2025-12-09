@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClInclude Include="Date.h" />
     <ClInclude Include="Habit.h" />
+    <ClInclude Include="Logic.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
