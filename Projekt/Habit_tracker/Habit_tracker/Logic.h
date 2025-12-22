@@ -2,26 +2,23 @@
 #include "Habit.h"
 #include <fstream>
 #include <string>
+#include <vector>
+#include <Windows.h>
+
+enum View {
+	Welcome, // nie ma profilu do wczytania
+	Load_profile, // wczytywanie profilu
+	Main_menu, // po wczytaniu profilu 
+	Add_habit, // dodawanie nawyku
+};
 namespace Logic {
+	constexpr int Profile_ID = 1000;
+	constexpr int Habit_done_ID = 5000;
 
-	bool make_save(Habit habit) {
-		std::ofstream save("save.txt"); // to bedzie fstream
-		if (not save) {
-			std::cerr << "Save problem" << std::endl;
-			return false;
-		}
-		save << habit.to_save();
-		save.close();
-		std::cout << "Progress saved" << std::endl;
-		return true;
-	}
+	extern std::wstring Profile_name;
+	extern View Current_view;
+	extern std::vector<std::wstring> Files_names;
+	extern std::vector<Habit> Habits;
 
-	// bool load_save();
-}
-
-namespace narrator {
-	void first_time_welcome() {
-		std::cout << "Hello player!" << std::endl;
-		std::cout << "Welcome to the Habit Tracker!" << std::endl;
-	}
+	const time_t today_();
 }
