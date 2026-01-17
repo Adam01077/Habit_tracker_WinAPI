@@ -1,13 +1,13 @@
 #pragma once
-#include "Date.h"
+#include <string>
 
 class Habit {
 public:
-	enum class Type { good, bad };
-	enum class Difficulty { hard, meduim, easy, common };
-	enum class Frequency { daily, weekly, monthly };
+	enum class Type { good, bad, unknown };
+	enum class Difficulty { hard, meduim, easy, common,unknown };
+	enum class Frequency { daily, weekly, monthly, unknown };
 private:
-	std::string name;	
+	std::wstring name;	
 	Type type;
 	Difficulty difficulty; // how hard is it to stop/start 
 	Frequency frequency; // how often do you have to do habit
@@ -15,7 +15,8 @@ private:
 	int current_streak;
 
 public:
-	Habit(std::string Name,Type type,Difficulty diffculty, Frequency frequency) : // ustawic last_done jako obecny dzien 
+	Habit() : name(L"-"), type(Type::unknown), difficulty(Difficulty::unknown), frequency(Frequency::unknown), last_done(0), current_streak(0) {}
+	Habit(std::wstring Name,Type type,Difficulty diffculty, Frequency frequency) :
 		name(Name), type(type), difficulty(diffculty), frequency(frequency), last_done(0), current_streak(0) {}
 
 	~Habit() {}
@@ -24,7 +25,7 @@ public:
 
 	void print_last_done() const;
 
-	void set_name(std::string habit_name);
+	void set_name(std::wstring habit_name);
 
 	void set_type(Type habit_type);
 
@@ -38,7 +39,7 @@ public:
 
 	void increase_streak();
 
-	const std::string get_name() const;
+	const std::wstring get_name() const;
 	
 	const Type get_type() const;
 
@@ -50,7 +51,17 @@ public:
 
 	const int get_current_streak() const;
 
-	std::string to_save() const;
-};
+	std::wstring to_save() const;
 
-const time_t today_();
+	Habit from_file(const std::wstring& data);
+
+	void clear_habit();
+
+	std::wstring to_print() const;
+
+	std::wstring type_to_string() const;
+
+	std::wstring freq_to_string() const;
+
+	std::wstring diff_to_string() const;
+};
