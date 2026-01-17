@@ -1,9 +1,5 @@
 #pragma once
 
-
-#pragma once
-
-
 HFONT Font1 = CreateFont(
 	50,                  // wysokoœæ czcionki (rozmiar)
 	0,                   // szerokoœæ (0 = automatyczna)
