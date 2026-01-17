@@ -1,25 +1,13 @@
 #include <iostream>
 #include "Habit.h"
-#include "Date.h"
 #include <chrono>
 #include <ctime>
 #include <string>
+#include "Logic.h"
 
-const time_t today_() {
-	time_t now;
-	now = time(nullptr);
-	struct tm time_now {};
-	localtime_s(&time_now, &now);
-	time_now.tm_hour = 0;
-	time_now.tm_min = 0;
-	time_now.tm_sec = 0;
-	time_now.tm_isdst = -1;
-	now = mktime(&time_now);
-	return now;
-}
 
 void Habit::check_streak() {
-	auto time_now = today_();	
+	auto time_now = Logic::today_();	
 	int difference = difftime(time_now, last_done) / 86400;
 	switch (frequency) {
 	case Frequency::daily:
@@ -59,13 +47,12 @@ void Habit::set_last_done(time_t time) {
 	last_done = time;
 }
 
-void Habit::set_name(std::string habit_name) {
+void Habit::set_name(std::wstring habit_name) {
 	name = habit_name;
 }
 
 void Habit::set_type(Type habit_type) {
 	type = habit_type;
-
 }
 
 void Habit::set_difficulty(Difficulty difficulty_) {
@@ -84,7 +71,7 @@ void Habit::increase_streak() {
 	current_streak += 1;
 }
 
-const std::string Habit::get_name() const {
+const std::wstring Habit::get_name() const {
 	return name;
 }
 
@@ -108,43 +95,146 @@ const int Habit::get_current_streak() const {
 	return current_streak;
 }
 
-std::string Habit::to_save() const {
-	std::string info;
-	std::string type_string;
-	std::string diff_string;
-	std::string freq_string;
+std::wstring Habit::to_save() const {
+	std::wstring info;
+	std::wstring type_string;
+	std::wstring diff_string;
+	std::wstring freq_string;
 	switch (type) {
 	case Type::good:
-		type_string = "G";
+		type_string = L"G";
 		break;
 	case Type::bad:
-		type_string = "B";
+		type_string = L"B";
 		break;
 	}
 	switch (difficulty) {
 	case Difficulty::common:
-		diff_string = "C";
+		diff_string = L"C";
 		break;
 	case Difficulty::easy:
-		diff_string = "E";
+		diff_string = L"E";
 			break;
 	case Difficulty::meduim:
-		diff_string = "M";
+		diff_string = L"M";
 		break;
 	case Difficulty::hard:
-		diff_string = "H";
+		diff_string = L"H";
 		break;
 	}
 	switch (frequency) {
 	case Frequency::daily:
-		freq_string = "D";
+		freq_string = L"D";
 		break;
 	case Frequency::weekly:
-		freq_string = "W";
+		freq_string = L"W";
 		break;
 	case Frequency::monthly:
-		freq_string = "M";
+		freq_string = L"M";
 	}
-	info = get_name() +";" + type_string + ";" + diff_string + ";" + freq_string+ ";" + std::to_string(last_done) + ";" + std::to_string(current_streak);
+	info = get_name() +L";" + type_string + L";" + diff_string + L";" + freq_string+ L";" + std::to_wstring(last_done) + L";" + std::to_wstring(current_streak);
 	return info;
+}
+
+Habit Habit::from_file(const std::wstring& data) {
+	std::wstringstream ss(data);
+	std::wstring name, type_str, diff_str, freq_str, last_done_str, streak_str;
+	std::getline(ss, name, L';');
+	set_name(name);
+	std::getline(ss, type_str, L';');
+	if (type_str == L"G") {
+		set_type(Type::good);
+	}
+	else if (type_str == L"B") {
+		set_type(Type::bad);
+	}
+	std::getline(ss, diff_str, L';');
+	if (diff_str == L"C") {
+		set_difficulty(Difficulty::common);
+	}
+	else if (diff_str == L"E") {
+		set_difficulty(Difficulty::easy);
+	}
+	else if (diff_str == L"M") {
+		set_difficulty(Difficulty::meduim);
+	}
+	else if (diff_str == L"H") {
+		set_difficulty(Difficulty::hard);
+	}
+	std::getline(ss, freq_str, L';');
+	if (freq_str == L"D") {
+		set_frequency(Frequency::daily);
+	}
+	else if (freq_str == L"W") {
+		set_frequency(Frequency::weekly);
+	}
+	else if (freq_str == L"M") {
+		set_frequency(Frequency::monthly);
+	}
+	std::getline(ss, last_done_str, L';');
+	set_last_done(static_cast<time_t>(std::stoll(last_done_str)));
+	std::getline(ss, streak_str, L';');
+	set_custom_streak(std::stoi(streak_str));
+	return *this;
+}
+
+void Habit::clear_habit() {
+	name = L"";
+	type = Habit::Type::unknown;
+	difficulty = Difficulty::unknown;
+	frequency = Frequency::unknown;
+	last_done = 0;
+	current_streak = 0;
+}
+
+std::wstring Habit::to_print() const {
+	return name + L" (" + std::to_wstring(current_streak) + L")";
+}
+
+std::wstring Habit::type_to_string() const {
+	std::wstring result;
+	switch (type) {
+	case Habit::Type::good:
+		result = L"Good";
+		break;
+	case Habit::Type::bad:
+		result = L"Bad";
+		break;
+	}
+	return result;
+}
+
+std::wstring Habit::freq_to_string() const {
+	std::wstring result;
+	switch (frequency) {
+	case Habit::Frequency::daily:
+		result = L"Daily";
+		break;
+	case Habit::Frequency::monthly:
+		result = L"Monthly";
+		break;
+	case Habit::Frequency::weekly:
+		result = L"Weekly";
+		break;
+	}
+	return result;
+}
+
+std::wstring Habit::diff_to_string() const {
+	std::wstring result;
+	switch (difficulty) {
+	case Habit::Difficulty::easy:
+		result = L"Easy";
+		break;
+	case Habit::Difficulty::meduim:
+		result = L"Medium";
+		break;
+	case Habit::Difficulty::common:
+		result = L"Common";
+		break;
+	case Habit::Difficulty::hard:
+		result = L"Hard";
+		break;
+	}
+	return result;
 }
