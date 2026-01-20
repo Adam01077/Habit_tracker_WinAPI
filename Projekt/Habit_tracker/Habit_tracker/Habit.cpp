@@ -7,20 +7,27 @@
 
 
 void Habit::check_streak() {
+	if (last_done == 0) return; // nigdy nie wykonano
+
 	auto time_now = Logic::today_();	
 	int difference = difftime(time_now, last_done) / 86400;
 	switch (frequency) {
 	case Frequency::daily:
+	{
 		if (difference > 1) {
 			current_streak = 0;
 		}
 		break;
+	}
 	case Frequency::weekly:
+	{
 		if (difference > 7) {
 			current_streak = 0;
 		}
 		break;
-	case Frequency::monthly: 
+	}
+	case Frequency::monthly:
+	{
 		struct tm last_done_tm {};
 		localtime_s(&last_done_tm, &last_done);
 		struct tm time_now_tm {};
@@ -31,16 +38,17 @@ void Habit::check_streak() {
 		}
 		break;
 	}
+	}
 }
 
-void Habit::print_last_done() const {
+std::wstring Habit::print_last_done() const {
 	struct tm last_done_tm {};
 	localtime_s(&last_done_tm, &last_done);
 	int day, month, year;
 	day = last_done_tm.tm_mday;
 	month = last_done_tm.tm_mon + 1;
 	year = last_done_tm.tm_year + 1900;
-	std::cout << day << "." << month << "." << year << std::endl;
+	return std::to_wstring(day) +  L"." + std::to_wstring(month) + L"." + std::to_wstring(year);
 }
 
 void Habit::set_last_done(time_t time) {
@@ -237,4 +245,40 @@ std::wstring Habit::diff_to_string() const {
 		break;
 	}
 	return result;
+}
+
+bool Habit::is_done_in_peroid() const {
+	if (last_done == 0) return false;  
+
+	time_t today = Logic::today_();
+
+	switch (frequency) {
+	case Frequency::daily:
+	{
+
+		return last_done >= today;
+	}
+
+	case Frequency::weekly:
+	{
+
+		struct tm today_tm {};
+		localtime_s(&today_tm, &today);
+		int days_since_monday = (today_tm.tm_wday + 6) % 7;
+		time_t week_start = today - (days_since_monday * 86400);
+
+		return last_done >= week_start;
+	}
+
+	case Frequency::monthly:
+	{
+		struct tm last_tm {}, today_tm{};
+		localtime_s(&last_tm, &last_done);
+		localtime_s(&today_tm, &today);
+
+		return (last_tm.tm_year == today_tm.tm_year &&
+			last_tm.tm_mon == today_tm.tm_mon);
+	}
+	}
+	return false;
 }

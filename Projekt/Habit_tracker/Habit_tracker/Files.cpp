@@ -8,9 +8,10 @@
 namespace Files {
 	const std::filesystem::path path = "saves";
 
-	bool first_run() {
-		return std::filesystem::create_directories(path);
+	void first_run() {
+		std::filesystem::create_directories(path);
 	}
+
 	bool load_save(const std::wstring& Name) {
 		std::wfstream load_file;
 		std::wstring file_name = Name + L".txt";
@@ -22,6 +23,7 @@ namespace Files {
 		std::wstring line;
 		while (std::getline(load_file,line)) {
 			loaded_habit.from_file(line);
+			loaded_habit.check_streak();
 			Logic::Habits.push_back(loaded_habit);
 		}
 		load_file.close();
@@ -33,10 +35,14 @@ namespace Files {
 		std::wstring file_name = Name + L".txt";
 		save_file.open(path / file_name, std::ios::out);
 		if (!save_file) {
-			throw std::runtime_error("Could not open save file."); // to do zmiany 
+			throw std::runtime_error("Could not open save file.");
+		}
+		for (const auto& habit : Logic::Habits) {
+			save_file << habit.to_save() << L"\n";
 		}
 		save_file.close();
 	}
+
 	std::vector<std::wstring> get_files_names() {
 		std::vector<std::wstring> file_names;
 		for (const auto& file : std::filesystem::directory_iterator(path)) {

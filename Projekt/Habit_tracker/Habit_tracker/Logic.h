@@ -23,7 +23,7 @@ enum MENU_ID {
 	bChangeProfile, // zmiana profilu w menu
 	bNewHabit, // dodanie nawyku w menu
 	bMoreInfo, // wiêcej informacji o nawyku w menu
-	optGood,
+	optGood, 
 	optBad,
 	optHard,
 	optMedium,
@@ -55,4 +55,5 @@ namespace Logic {
 	void CreateHabitControls(HWND hWnd, int i);
 	void DestroyHabitControls(HWND hWnd);
 	void RebuildHabitUI(HWND hWnd);
+	void UpdateUI(HWND hWnd);
 }

@@ -60,9 +60,9 @@ namespace Layouts{
 		
 		x_Info += gap;
 		for (int i = 0; i < Logic::Habits.size(); i++) {
-			SetWindowPos(GetDlgItem(hWnd, Logic::Habit_info_ID + i), NULL, x_Info, y_temp, Info_button_width, button_height, SWP_NOZORDER);
-			SetWindowPos(GetDlgItem(hWnd, Logic::Habit_more_info_ID + i), NULL, x_Info+Info_button_width, y_temp, small_button_width, button_height, SWP_NOZORDER);
-			SetWindowPos(GetDlgItem(hWnd, Logic::Habit_done_box_ID + i), NULL, x_Info + Info_button_width+ small_button_width, y_temp, small_button_width, button_height, SWP_NOZORDER);
+			SetWindowPos(GetDlgItem(hWnd, Logic::Habit_info_ID + i), NULL, x_Info, y_temp + gap, Info_button_width, button_height, SWP_NOZORDER);
+			SetWindowPos(GetDlgItem(hWnd, Logic::Habit_more_info_ID + i), NULL, x_Info+Info_button_width, y_temp + gap, small_button_width, button_height, SWP_NOZORDER);
+			SetWindowPos(GetDlgItem(hWnd, Logic::Habit_done_box_ID + i), NULL, x_Info + Info_button_width+ small_button_width, y_temp + gap, small_button_width, button_height, SWP_NOZORDER);
 
 			y_temp += button_height + gap;
 		}

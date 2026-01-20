@@ -3,7 +3,7 @@
 #include <fstream>
 namespace Files {
 	
-	bool first_run();
+	void first_run();
 
 	bool load_save(const std::wstring& Name);
 

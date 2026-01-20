@@ -9,8 +9,8 @@ public:
 private:
 	std::wstring name;	
 	Type type;
-	Difficulty difficulty; // how hard is it to stop/start 
-	Frequency frequency; // how often do you have to do habit
+	Difficulty difficulty; 
+	Frequency frequency; 
 	time_t last_done;
 	int current_streak;
 
@@ -23,7 +23,7 @@ public:
 
 	void check_streak();
 
-	void print_last_done() const;
+	std::wstring print_last_done() const;
 
 	void set_name(std::wstring habit_name);
 
@@ -64,4 +64,7 @@ public:
 	std::wstring freq_to_string() const;
 
 	std::wstring diff_to_string() const;
+
+	bool is_done_in_peroid() const;
+
 };
