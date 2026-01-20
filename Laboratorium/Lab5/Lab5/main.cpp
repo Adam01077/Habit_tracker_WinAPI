@@ -43,7 +43,7 @@ int main() {
 			fa2.at(100);  
 		}
 		catch (const std::out_of_range& e) {
-			std::cout << "Zlapano blad\n  " << e.what() << "\n";
+			std::cout << "Zlapano blad!\n  " << e.what() << "\n";
 		}
 
 		std::cout << "\nKoniec\n";
