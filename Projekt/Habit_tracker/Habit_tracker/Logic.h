@@ -4,7 +4,8 @@
 #include <string>
 #include <vector>
 #include <Windows.h>
-
+#include <map>
+#include <functional>
 enum View {
 	Welcome, // ekran poczatkowy
 	New_profile, // dodawanie nowego profilu
@@ -35,6 +36,7 @@ enum MENU_ID {
 	bCreateHabit, // tworzenie nawyku po wpisaniu informacji
 	textStatic,
 	bCancel2,
+	bStats,
 };
 
 
@@ -56,4 +58,21 @@ namespace Logic {
 	void DestroyHabitControls(HWND hWnd);
 	void RebuildHabitUI(HWND hWnd);
 	void UpdateUI(HWND hWnd);
-}
+	std::wstring GetWindowTextString(HWND hWnd, int controlID);
+	void HandleProfileSelection(HWND hWnd, int button_ID);
+	void HandleHabitMoreInfo(HWND hWnd, int button_ID);
+	void HandleHabitDone(HWND hWnd, int button_ID);
+};
+
+using RadioHandler = std::function<void()>;
+const std::map<int, RadioHandler> radioHandlers = {
+	{optGood,    [] { Logic::new_habit.set_type(Habit::Type::good); }},
+	{optBad,     [] { Logic::new_habit.set_type(Habit::Type::bad); }},
+	{optCommon,  [] { Logic::new_habit.set_difficulty(Habit::Difficulty::common); }},
+	{optEasy,    [] { Logic::new_habit.set_difficulty(Habit::Difficulty::easy); }},
+	{optMedium,  [] { Logic::new_habit.set_difficulty(Habit::Difficulty::medium); }},
+	{optHard,    [] { Logic::new_habit.set_difficulty(Habit::Difficulty::hard); }},
+	{optDaily,   [] { Logic::new_habit.set_frequency(Habit::Frequency::daily); }},
+	{optWeekly,  [] { Logic::new_habit.set_frequency(Habit::Frequency::weekly); }},
+	{optMonthly, [] { Logic::new_habit.set_frequency(Habit::Frequency::monthly); }},
+};

@@ -1,7 +1,7 @@
 #include "Logic.h"
 #include <ctime>
 #include "Layouts.h"
-
+#include "Files.h"
 namespace Logic {
     std::wstring Profile_name{};
     View Current_view = View::Welcome;
@@ -70,6 +70,7 @@ namespace Logic {
 			 ShowWindow(GetDlgItem(hWnd, insInfo), SW_HIDE);
 			 ShowWindow(GetDlgItem(hWnd, bSave), SW_HIDE);
 			 ShowWindow(GetDlgItem(hWnd, bCancel), SW_HIDE);
+			 ShowWindow(GetDlgItem(hWnd, bStats), SW_HIDE);
 
 			 break;
 		 }
@@ -80,12 +81,14 @@ namespace Logic {
 			 ShowWindow(GetDlgItem(hWnd, insInfo), SW_SHOW);
 			 ShowWindow(GetDlgItem(hWnd, bSave), SW_SHOW);
 			 ShowWindow(GetDlgItem(hWnd, bCancel), SW_SHOW);
+			 ShowWindow(GetDlgItem(hWnd, bStats), SW_HIDE);
 			 break;
 		 }
 		 case View::Load_profile:
 		 {
 			 ShowWindow(GetDlgItem(hWnd, bNewProfile), SW_HIDE);
 			 ShowWindow(GetDlgItem(hWnd, bLoadProfile), SW_HIDE);
+			 ShowWindow(GetDlgItem(hWnd, bStats), SW_HIDE);
 			 for (int i = 0; i < Logic::Files_names.size(); i++) {
 				 ShowWindow(GetDlgItem(hWnd, Logic::Profile_ID + i), SW_SHOW);
 			 }
@@ -110,13 +113,14 @@ namespace Logic {
 			 ShowWindow(GetDlgItem(hWnd, optMonthly), SW_HIDE);
 			 ShowWindow(GetDlgItem(hWnd, bCreateHabit), SW_HIDE);
 			 ShowWindow(GetDlgItem(hWnd, bCancel2), SW_HIDE);
+			 ShowWindow(GetDlgItem(hWnd, bStats), SW_SHOW);
 
 			 for (int i = 0; i < Logic::Habits.size(); i++) {
 				 SetWindowText(GetDlgItem(hWnd, Logic::Habit_info_ID + i), Logic::Habits[i].to_print().c_str());
 				 ShowWindow(GetDlgItem(hWnd, Logic::Habit_info_ID + i), SW_SHOW);
 				 ShowWindow(GetDlgItem(hWnd, Logic::Habit_more_info_ID + i), SW_SHOW);
 				 ShowWindow(GetDlgItem(hWnd, Logic::Habit_done_box_ID + i), SW_SHOW);
-				 EnableWindow(GetDlgItem(hWnd, Logic::Habit_done_box_ID + i), !Logic::Habits[i].is_done_in_peroid());
+				 EnableWindow(GetDlgItem(hWnd, Logic::Habit_done_box_ID + i), !Logic::Habits[i].is_done_in_period());
 			 }
 			 break;
 		 }
@@ -128,6 +132,7 @@ namespace Logic {
 				 ShowWindow(GetDlgItem(hWnd, Logic::Habit_more_info_ID + i), SW_HIDE);
 				 ShowWindow(GetDlgItem(hWnd, Logic::Habit_done_box_ID + i), SW_HIDE);
 			 }
+			 ShowWindow(GetDlgItem(hWnd, bStats), SW_HIDE);
 			 ShowWindow(GetDlgItem(hWnd, bCancel2), SW_SHOW);
 			 ShowWindow(GetDlgItem(hWnd, bNewHabit), SW_HIDE);
 			 ShowWindow(GetDlgItem(hWnd, bChangeProfile), SW_HIDE);
@@ -169,7 +174,7 @@ namespace Logic {
 			 SendMessage(GetDlgItem(hWnd, optMedium), BM_SETCHECK, BST_UNCHECKED, 0);
 			 SendMessage(GetDlgItem(hWnd, optHard), BM_SETCHECK, BST_UNCHECKED, 0);
 			 break;
-		 case Habit::Difficulty::meduim:
+		 case Habit::Difficulty::medium:
 			 SendMessage(GetDlgItem(hWnd, optMedium), BM_SETCHECK, BST_CHECKED, 0);
 			 SendMessage(GetDlgItem(hWnd, optEasy), BM_SETCHECK, BST_UNCHECKED, 0);
 			 SendMessage(GetDlgItem(hWnd, optCommon), BM_SETCHECK, BST_UNCHECKED, 0);
@@ -200,4 +205,61 @@ namespace Logic {
 			 break;
 		 }
 	 };
+
+	 std::wstring GetWindowTextString(HWND hWnd, int controlID) {
+		 HWND hCtrl = GetDlgItem(hWnd, controlID);
+		 int length = GetWindowTextLength(hCtrl);
+		 if (length == 0) return L"";
+
+		 std::wstring text(length + 1, L'\0');
+		 GetWindowText(hCtrl, &text[0], length + 1);
+		 text.resize(length);
+		 return text;
+	 }
+
+	 void HandleProfileSelection(HWND hWnd, int button_ID) {
+		 int index = button_ID - Logic::Profile_ID;
+		 auto profile_name = Logic::Files_names[index];
+		 Logic::Profile_name = profile_name;
+		 Logic::Habits.clear();
+
+		 if (Files::load_save(profile_name)) {
+			 Logic::RebuildHabitUI(hWnd);
+			 MessageBox(hWnd, TEXT("Profile has been loaded"), TEXT("Confirmation"), MB_OK);
+
+			 std::for_each(Logic::Files_names.begin(), Logic::Files_names.end(),
+				 [hWnd, i = 0](const auto&) mutable {
+					 ShowWindow(GetDlgItem(hWnd, Logic::Profile_ID + i++), SW_HIDE);
+				 });
+
+			 Logic::Current_view = View::Main_menu;
+			 SendMessage(hWnd, WM_SIZE, 0, 0);
+			 Logic::UpdateUI(hWnd);
+		 }
+		 else {
+			 MessageBox(hWnd, TEXT("Could not open save file. "), TEXT("Error"), MB_OK);
+		 }
+	 }
+
+	 void HandleHabitMoreInfo(HWND hWnd, int button_ID) {
+		 int index = button_ID - Logic::Habit_more_info_ID;
+		 const Habit& h = Logic::Habits[index];
+
+		 std::wstring info =
+			 L"Name: " + h.get_name() + L"\n" +
+			 L"Type: " + h.type_to_string() + L"\n" +
+			 L"Difficulty: " + h.diff_to_string() + L"\n" +
+			 L"Frequency: " + h.freq_to_string() + L"\n" +
+			 L"Last Done: " + h.print_last_done();
+
+		 MessageBox(hWnd, info.c_str(), L"Habit Info", MB_OK);
+	 }
+
+	 void HandleHabitDone(HWND hWnd, int button_ID) {
+		 int index = button_ID - Logic::Habit_done_box_ID;
+		 Logic::Habits[index].set_last_done(Logic::today_());
+		 Logic::Habits[index].increase_streak();
+		 Files::save_progress(Logic::Profile_name);
+		 Logic::UpdateUI(hWnd);
+	 }
 }

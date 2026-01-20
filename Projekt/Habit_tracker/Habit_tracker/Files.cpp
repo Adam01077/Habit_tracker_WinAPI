@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 #include "Logic.h"
+#include <algorithm>
 namespace Files {
 	const std::filesystem::path path = "saves";
 
@@ -19,12 +20,13 @@ namespace Files {
 		if (!load_file) {
 			return false;
 		}
-		Habit loaded_habit{};
 		std::wstring line;
-		while (std::getline(load_file,line)) {
+		while (std::getline(load_file, line)) {
+			if (line.empty()) continue; 
+			Habit loaded_habit{};
 			loaded_habit.from_file(line);
 			loaded_habit.check_streak();
-			Logic::Habits.push_back(loaded_habit);
+			Logic::Habits.push_back(std::move(loaded_habit));
 		}
 		load_file.close();
 		return true;
@@ -37,9 +39,7 @@ namespace Files {
 		if (!save_file) {
 			throw std::runtime_error("Could not open save file.");
 		}
-		for (const auto& habit : Logic::Habits) {
-			save_file << habit.to_save() << L"\n";
-		}
+		std::for_each(Logic::Habits.cbegin(), Logic::Habits.cend(), [&save_file](const Habit& h) { save_file << h.to_save() << L'\n';});
 		save_file.close();
 	}
 
@@ -51,5 +51,13 @@ namespace Files {
 			}
 		}
 		return file_names;
+	}
+
+	bool delete_profile(const std::wstring& name) {
+		return std::filesystem::remove(path / (name + L".txt"));
+	}
+
+	bool profile_exists(const std::wstring& name) {
+		return std::filesystem::exists(path / (name + L".txt"));
 	}
 }

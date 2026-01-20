@@ -4,7 +4,7 @@
 class Habit {
 public:
 	enum class Type { good, bad, unknown };
-	enum class Difficulty { hard, meduim, easy, common,unknown };
+	enum class Difficulty { hard, medium, easy, common,unknown };
 	enum class Frequency { daily, weekly, monthly, unknown };
 private:
 	std::wstring name;	
@@ -13,6 +13,7 @@ private:
 	Frequency frequency; 
 	time_t last_done;
 	int current_streak;
+	int best_streak = 0;
 
 public:
 	Habit() : name(L"-"), type(Type::unknown), difficulty(Difficulty::unknown), frequency(Frequency::unknown), last_done(0), current_streak(0) {}
@@ -65,6 +66,9 @@ public:
 
 	std::wstring diff_to_string() const;
 
-	bool is_done_in_peroid() const;
+	bool is_done_in_period() const;
 
+	int get_best_streak() const;
+
+	void update_best_streak();
 };

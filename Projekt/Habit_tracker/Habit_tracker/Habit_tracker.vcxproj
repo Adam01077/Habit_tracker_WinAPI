@@ -129,15 +129,16 @@
     <ClCompile Include="Layouts.cpp" />
     <ClCompile Include="Logic.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Statistics.cpp" />
     <ClCompile Include="WndProc.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Date.h" />
     <ClInclude Include="Files.h" />
     <ClInclude Include="Fonts.h" />
     <ClInclude Include="Habit.h" />
     <ClInclude Include="Layouts.h" />
     <ClInclude Include="Logic.h" />
+    <ClInclude Include="Statistics.h" />
     <ClInclude Include="WndProc.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

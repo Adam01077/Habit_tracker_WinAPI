@@ -1,0 +1,2 @@
+Bieganie;G;E;W;1768950000;1;1
+Czytanie ;G;M;M;1768950000;1;1

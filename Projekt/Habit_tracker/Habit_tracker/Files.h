@@ -10,4 +10,8 @@ namespace Files {
 	void save_progress(const std::wstring& Name);
 
 	std::vector<std::wstring> get_files_names();
+
+	bool delete_profile(const std::wstring& name);
+
+	bool profile_exists(const std::wstring& name);
 }

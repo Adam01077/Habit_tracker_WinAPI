@@ -42,6 +42,9 @@ void Habit::check_streak() {
 }
 
 std::wstring Habit::print_last_done() const {
+	if (last_done == 0) {
+		return L"Not yet";
+	}
 	struct tm last_done_tm {};
 	localtime_s(&last_done_tm, &last_done);
 	int day, month, year;
@@ -77,6 +80,7 @@ void Habit::set_custom_streak(int streak) {
 
 void Habit::increase_streak() {
 	current_streak += 1;
+	update_best_streak();
 }
 
 const std::wstring Habit::get_name() const {
@@ -122,8 +126,8 @@ std::wstring Habit::to_save() const {
 		break;
 	case Difficulty::easy:
 		diff_string = L"E";
-			break;
-	case Difficulty::meduim:
+		break;
+	case Difficulty::medium:
 		diff_string = L"M";
 		break;
 	case Difficulty::hard:
@@ -139,14 +143,15 @@ std::wstring Habit::to_save() const {
 		break;
 	case Frequency::monthly:
 		freq_string = L"M";
+		break;
 	}
-	info = get_name() +L";" + type_string + L";" + diff_string + L";" + freq_string+ L";" + std::to_wstring(last_done) + L";" + std::to_wstring(current_streak);
+	info = get_name() +L";" + type_string + L";" + diff_string + L";" + freq_string+ L";" + std::to_wstring(last_done) + L";" + std::to_wstring(current_streak) + L";" + std::to_wstring(best_streak);
 	return info;
 }
 
 Habit Habit::from_file(const std::wstring& data) {
 	std::wstringstream ss(data);
-	std::wstring name, type_str, diff_str, freq_str, last_done_str, streak_str;
+	std::wstring name, type_str, diff_str, freq_str, last_done_str, streak_str,token;
 	std::getline(ss, name, L';');
 	set_name(name);
 	std::getline(ss, type_str, L';');
@@ -164,7 +169,7 @@ Habit Habit::from_file(const std::wstring& data) {
 		set_difficulty(Difficulty::easy);
 	}
 	else if (diff_str == L"M") {
-		set_difficulty(Difficulty::meduim);
+		set_difficulty(Difficulty::medium);
 	}
 	else if (diff_str == L"H") {
 		set_difficulty(Difficulty::hard);
@@ -183,6 +188,9 @@ Habit Habit::from_file(const std::wstring& data) {
 	set_last_done(static_cast<time_t>(std::stoll(last_done_str)));
 	std::getline(ss, streak_str, L';');
 	set_custom_streak(std::stoi(streak_str));
+	if (std::getline(ss, token, L';')) {
+		best_streak = std::stoi(token);
+	}
 	return *this;
 }
 
@@ -208,6 +216,9 @@ std::wstring Habit::type_to_string() const {
 	case Habit::Type::bad:
 		result = L"Bad";
 		break;
+	default:
+		result = L"Unknown";
+		break;
 	}
 	return result;
 }
@@ -224,6 +235,9 @@ std::wstring Habit::freq_to_string() const {
 	case Habit::Frequency::weekly:
 		result = L"Weekly";
 		break;
+	default:
+		result = L"Unknown";
+		break;
 	}
 	return result;
 }
@@ -234,7 +248,7 @@ std::wstring Habit::diff_to_string() const {
 	case Habit::Difficulty::easy:
 		result = L"Easy";
 		break;
-	case Habit::Difficulty::meduim:
+	case Habit::Difficulty::medium:
 		result = L"Medium";
 		break;
 	case Habit::Difficulty::common:
@@ -243,11 +257,14 @@ std::wstring Habit::diff_to_string() const {
 	case Habit::Difficulty::hard:
 		result = L"Hard";
 		break;
+	default:
+		result = L"Unknown";
+		break;
 	}
 	return result;
 }
 
-bool Habit::is_done_in_peroid() const {
+bool Habit::is_done_in_period() const {
 	if (last_done == 0) return false;  
 
 	time_t today = Logic::today_();
@@ -276,9 +293,18 @@ bool Habit::is_done_in_peroid() const {
 		localtime_s(&last_tm, &last_done);
 		localtime_s(&today_tm, &today);
 
-		return (last_tm.tm_year == today_tm.tm_year &&
-			last_tm.tm_mon == today_tm.tm_mon);
+		return (last_tm.tm_year == today_tm.tm_year && last_tm.tm_mon == today_tm.tm_mon);
 	}
 	}
 	return false;
+}
+
+int Habit::get_best_streak() const {
+	return best_streak;
+}
+
+void Habit::update_best_streak() {
+	if (current_streak > best_streak) {
+		best_streak = current_streak;
+	}
 }

@@ -1,4 +1,4 @@
-Programowanie c++;G;C;D;1768863600;1
-Palenie;B;H;D;1768863600;1
-śpiew;G;M;W;1768863600;1
-czytanie;G;C;D;1768863600;1
+Programowanie c++;G;C;D;1768950000;22;0
+Palenie;B;H;D;1768950000;13;0
+Spiew;G;M;W;1768863600;1;0
+czytanie;G;C;D;1768950000;10;0

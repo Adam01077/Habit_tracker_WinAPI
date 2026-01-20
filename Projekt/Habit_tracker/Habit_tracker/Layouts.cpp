@@ -67,6 +67,7 @@ namespace Layouts{
 			y_temp += button_height + gap;
 		}
 
+		SetWindowPos(GetDlgItem(hWnd, bStats), NULL, x_Info, y - 3 * button_height, button_width, button_height, SWP_NOZORDER);
 		SetWindowPos(GetDlgItem(hWnd, bNewHabit), NULL, x_Info, y-button_height,button_width , button_height, SWP_NOZORDER);
 		SetWindowPos(GetDlgItem(hWnd, bChangeProfile), NULL, x_Info, y - 2 * button_height, button_width, button_height, SWP_NOZORDER);
 	}
