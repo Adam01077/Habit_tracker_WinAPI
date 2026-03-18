@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36717.8 d17.14
+VisualStudioVersion = 17.14.36908.2
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Habit_tracker", "Habit_tracker\Habit_tracker.vcxproj", "{F13AEEC3-6615-42A8-B6D1-328A056A9A93}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Habit_tracker", "Habit_tracker.vcxproj", "{F13AEEC3-6615-42A8-B6D1-328A056A9A93}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +26,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {F7CD7297-DFC7-4FFC-82AA-F107DCB9B9C7}
+		SolutionGuid = {5B43DE48-D3C7-4730-825D-03C788C1B384}
 	EndGlobalSection
 EndGlobal

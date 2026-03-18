@@ -103,6 +103,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -124,22 +125,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Files.cpp" />
-    <ClCompile Include="Habit.cpp" />
-    <ClCompile Include="Layouts.cpp" />
-    <ClCompile Include="Logic.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Statistics.cpp" />
-    <ClCompile Include="WndProc.cpp" />
+    <ClInclude Include="include\Files.h" />
+    <ClInclude Include="include\Fonts.h" />
+    <ClInclude Include="include\Habit.h" />
+    <ClInclude Include="include\Layouts.h" />
+    <ClInclude Include="include\Logic.h" />
+    <ClInclude Include="include\Statistics.h" />
+    <ClInclude Include="include\WndProc.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Files.h" />
-    <ClInclude Include="Fonts.h" />
-    <ClInclude Include="Habit.h" />
-    <ClInclude Include="Layouts.h" />
-    <ClInclude Include="Logic.h" />
-    <ClInclude Include="Statistics.h" />
-    <ClInclude Include="WndProc.h" />
+    <ClCompile Include="src\Files.cpp" />
+    <ClCompile Include="src\Habit.cpp" />
+    <ClCompile Include="src\Layouts.cpp" />
+    <ClCompile Include="src\Logic.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Statistics.cpp" />
+    <ClCompile Include="src\WndProc.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
