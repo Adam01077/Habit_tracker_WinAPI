@@ -36,9 +36,7 @@ namespace Files {
 		std::wfstream save_file;
 		std::wstring file_name = Name + L".txt";
 		save_file.open(path / file_name, std::ios::out);
-		if (!save_file) {
-			throw std::runtime_error("Could not open save file.");
-		}
+		// sprawdzac czy blad
 		std::for_each(Logic::Habits.cbegin(), Logic::Habits.cend(), [&save_file](const Habit& h) { save_file << h.to_save() << L'\n';});
 		save_file.close();
 	}
